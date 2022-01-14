@@ -18,7 +18,7 @@ require('dotenv/config')
 
 //     res.send('We are on home');
 
-// })
+// }) 
 
 let stock = [{
     skuID: 1,
