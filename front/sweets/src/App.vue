@@ -1,22 +1,32 @@
 <template>
   <div id="app">
     <table class="main-table">
-      <ul class="list-sweets">
-        <li class="sweet-li" v-bind:key="skuObj.skuID" v-for="skuObj in SKU">
-          <skuComp class="sku-comp" :SKUobj="skuObj" @Refresh="getStock" />
-        </li>
-      </ul>
+      <td>
+        <h2>Total Stock Value: £{{ stockTotal }}</h2>
+        <ul class="list-sweets">
+          <li class="sweet-li" v-bind:key="skuObj.skuID" v-for="skuObj in SKU">
+            <skuComp class="sku-comp" :SKUobj="skuObj" @Refresh="getStock" />
+          </li>
+        </ul>
+      </td>
+      <td>
+        <h2>NEW STOCK ITEM:</h2>
+        <newSKU class="new-sku" @Refresh="getStock" />
+      </td>
     </table>
   </div>
 </template>
 
 <script>
 import axios from "axios";
+import newSKU from "./components/NewSKU.vue";
 import skuComp from "./components/SKU.vue";
+
 export default {
   name: "App",
   components: {
     skuComp,
+    newSKU,
   },
 
   props: {
@@ -34,21 +44,6 @@ export default {
         },
       ],
     },
-
-    //   SKU2: {type: Array, default: () => [
-
-    //     {
-    //       type: Object,
-    //       default: () => ({
-    //         skuID: 1,
-    //         skuName: "Trifle",
-    //         skuOHQ: 7,
-    //         skuPrice: 3.5,
-    //         skuDesc: "Naught but a Trifle.",
-    //       }),
-    //     },
-    //   ],
-    // },
   },
 
   data: function () {
@@ -59,48 +54,21 @@ export default {
       answer: null,
     };
   },
+
+  computed: {
+    stockTotal() {
+      return this.SKU.reduce(function (total, item) {
+        return total + item.skuPrice * item.skuOHQ;
+      }, 0);
+    },
+  },
   mounted() {
-    //   console.log(this.test);
     console.log(this.SKU);
 
     axios
       .get("http://localhost:5000/stock")
-      .then(
-        (response) =>
-          // (this.info = Object.keys(response.data.results).map((name) => {
-          //   return response.data.results[name];
-          // })) //JSON.parse(response.data)
-          (this.SKU = response.data)
-      )
-
-      .catch(function (error) {
-        if (error.response) {
-          // Request made and server responded
-          this.lastError = error.response.status;
-        } else if (error.request) {
-          // The request was made but no response was received
-          this.lastError = error.request;
-        } else {
-          // Something happened in setting up the request that triggered an Error
-          this.lastError = error.message;
-        }
-      });
-  },
-
-  methods: {
-    getStock() {
-
-      axios
-      .get("http://localhost:5000/stock")
-      .then(
-        (response) =>
-          // (this.info = Object.keys(response.data.results).map((name) => {
-          //   return response.data.results[name];
-          // })) //JSON.parse(response.data)
-          (this.SKU = response.data)
-      )
-
-      .catch(function (error) {
+      .then((response) => (this.SKU = response.data.data))
+      .catch((error) => {
         if (error.response) {
           // Request made and server responded
           console.log(error.response.status);
@@ -112,6 +80,26 @@ export default {
           console.log(error.message);
         }
       });
+  },
+
+  methods: {
+    getStock() {
+      axios
+        .get("http://localhost:5000/stock")
+        .then((response) => (this.SKU = response.data.data))
+
+        .catch((error) => {
+          if (error.response) {
+            // Request made and server responded
+            console.log(error.response.status);
+          } else if (error.request) {
+            // The request was made but no response was received
+            console.log(error.request);
+          } else {
+            // Something happened in setting up the request that triggered an Error
+            console.log(error.message);
+          }
+        });
     },
   },
 };
@@ -137,6 +125,12 @@ export default {
 }
 
 .sku-comp {
+  width: 15rem;
+  border: 3px solid olive;
+  justify-content: center;
+}
+
+.new-sku {
   width: 15rem;
   border: 3px solid olive;
   justify-content: center;

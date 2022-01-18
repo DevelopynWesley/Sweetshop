@@ -12,7 +12,10 @@
         {{
           SKUobj.skuOHQ
         }}
-        <button>+</button>
+        <button @click="incStock">+</button>
+      </tr>
+      <tr>
+        <button @click="delStock">Delete</button>
       </tr>
     </table>
   </div>
@@ -33,11 +36,14 @@ export default {
     },
     reduceStock() {
       axios
-        .get(
-          "http://localhost:5000/stock/update/" + this.SKUobj.skuID + "/minus/1"
+        .put(
+          "http://localhost:5000/stock/update/" +
+            this.SKUobj.skuID +
+            "/minus/1",
+          { skuID: this.SKUobj.skuID, amount: 1, oper: "minus" }
         )
 
-        .catch(function (error) {
+        .catch((error) => {
           if (error.response) {
             // Request made and server responded
             console.log(error.response.status);
@@ -49,16 +55,78 @@ export default {
             console.log(error.message);
           }
         });
-    },
-  },
 
-  mounted() {},
-  data: function () {
-    return {
-      visible: false,
-      longitude: 0,
-      latitude: 0,
-    };
+      this.refreshStock();
+    },
+
+    incStock() {
+      axios
+        .put("http://localhost:5000/stock/update/", {
+          skuID: this.SKUobj.skuID,
+          amount: 1,
+          oper: "add",
+        })
+
+        .catch((error) => {
+          if (error.response) {
+            // Request made and server responded
+            console.log(error.response.status);
+          } else if (error.request) {
+            // The request was made but no response was received
+            console.log(error.request);
+          } else {
+            // Something happened in setting up the request that triggered an Error
+            console.log(error.message);
+          }
+        });
+
+      this.refreshStock();
+    },
+
+    delStock() {
+      axios
+        .delete("http://localhost:5000/stock/delete/", {
+          skuID: this.SKUobj.skuID,
+          amount: 1,
+          oper: "add",
+        })
+
+        .catch((error) => {
+          if (error.response) {
+            // Request made and server responded
+            console.log(error.response.status);
+          } else if (error.request) {
+            // The request was made but no response was received
+            console.log(error.request);
+          } else {
+            // Something happened in setting up the request that triggered an Error
+            console.log(error.message);
+          }
+        });
+
+      this.refreshStock();
+    },
+    // incStock() {
+    //   axios
+    //     .put(
+    //       "http://localhost:5000/stock/update/" + this.SKUobj.skuID + "/add/1"
+    //     )
+
+    //     .catch( (error) => {
+    //       if (error.response) {
+    //         // Request made and server responded
+    //         console.log(error.response.status);
+    //       } else if (error.request) {
+    //         // The request was made but no response was received
+    //         console.log(error.request);
+    //       } else {
+    //         // Something happened in setting up the request that triggered an Error
+    //         console.log(error.message);
+    //       }
+    //     });
+
+    //   this.refreshStock();
+    // },
   },
 };
 </script>
