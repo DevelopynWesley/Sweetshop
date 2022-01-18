@@ -37,9 +37,8 @@ export default {
     reduceStock() {
       axios
         .put(
-          "http://localhost:5000/stock/update/" +
-            this.SKUobj.skuID +
-            "/minus/1",
+          "http://localhost:5000/stock/update/",
+           
           { skuID: this.SKUobj.skuID, amount: 1, oper: "minus" }
         )
 

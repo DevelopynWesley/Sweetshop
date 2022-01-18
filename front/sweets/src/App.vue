@@ -32,18 +32,7 @@ export default {
   props: {
     test: { type: String, default: "TEST" },
 
-    SKU: {
-      type: Array,
-      default: () => [
-        {
-          skuID: 1,
-          skuName: "Trifle",
-          skuOHQ: 7,
-          skuPrice: 3.5,
-          skuDesc: "Naught but a Trifle.",
-        },
-      ],
-    },
+    
   },
 
   data: function () {
@@ -52,8 +41,21 @@ export default {
       secondNum: "",
       operator: null,
       answer: null,
-    };
+      SKU:
+      [
+        {
+          skuID: 1,
+          skuName: "Trifle",
+          skuOHQ: 7,
+          skuPrice: 3.5,
+          skuDesc: "Naught but a Trifle.",
+        }
+      ]
+    
+    }
+
   },
+  
 
   computed: {
     stockTotal() {
